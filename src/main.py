@@ -17,86 +17,19 @@ import asyncio
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# !!!!!!!!!!!!!!!!!!!!!
-# ошибка тут!
 from database.database import Students
+from students.router import router as student_router
 
-# функция из базы данных
-from database.database import create_all, drop_all, get_session
-
-class StudentsI(BaseModel):
-    # Students_ID: int
-    Zvan: str | None = None
-    Fio: str
-    Password: str
-    Groups_ID: int
 
 
 
 # FastAPI
 app = FastAPI()
 
-students = [
-    {"Students_ID": 1, "Zvan": "curs", "Fio": "Ivanov", "Groups_ID": 1},
-    {"Students_ID": 2, "Zvan": "curs", "Fio": "Petrov", "Groups_ID": 2},
-    {"Students_ID": 3, "Zvan": "curs", "Fio": "Sidorov", "Groups_ID": 1},
-]
-
-
-# поиск пользователя
-async def get_student(student_id: int):
-    for student in students:
-        if student["Students_ID"] == student_id:
-            return student
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден!"
-    )
-    
-
-# выполнение функции при запросе пути
-@app.get("/")
-async def read_root():
-    return {"message": "My first FastAPI"}
-
-# загрузка пользователей
-@app.get("/students/", response_model=list[StudentsI])
-async def read_students():
-    return students
-
-# поиск студента
-@app.get("/students/{student_id}", response_model=StudentsI)
-async def find_student(student_id: int):
-    user = get_student(student_id)
-    return user
-
-# создаем студента
-@app.post("/students/", response_model=list[StudentsI])
-async def create_student(students_ID: int, fio: str, groups_ID: int, zvan: str = None, session : AsyncSession = Depends(get_session)):
-    student = Students(**students.dict())
-    session.add(student)
-    await session.commit()
-    # students.append(student.dict())
-    return student.dict()
+app.include_router(student_router)
 
 
 
-
-
-# обновление студента
-@app.put("/students/{student_id}")
-async def update_student(students_ID: int, fio: str, groups_ID: int, zvan: str = None):
-    global students
-    students = [s for s in students if s["Students_ID"] != students_ID]
-    student = StudentsI(Students_ID =students_ID, Zvan=zvan, Fio=fio, Groups_ID= groups_ID)
-    students.append(student.dict())
-    return students
-
-# удаление студента
-@app.delete("/students/{student_id}")
-async def delete_student(students_ID: int):
-    global students
-    students = [s for s in students if s["Students_ID"] != students_ID]
-    return students
 
 @app.get("/update_table")
 async def update_table():
