@@ -16,9 +16,6 @@ async def get_session() -> AsyncSession:
         async with AsyncSession(engine, class_=AsyncSession) as session:
             yield session
 
-# импортируем таблицы из models
-from .models import Groups, Students, Department, Discipline, Theme, Homework, Visit, History
-
 # функция создания таблиц базы данных
 async def create_all():
     async with engine.begin() as conn:

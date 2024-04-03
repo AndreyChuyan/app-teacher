@@ -17,10 +17,10 @@ import asyncio
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.database import Students
+# from database.database import Students
 from students.router import router as student_router
-
-
+from database.models import Groups, Students, Department, Discipline, Theme, Homework, Visit, History
+from database.database import create_all, drop_all, get_session
 
 
 # FastAPI
