@@ -56,13 +56,3 @@ class CRUDBase:
         await session.delete(obj)
         await session.commit()
 
-
-class CRUDBaseByUser(CRUDBase):
-    model: Base = Base
-
-    @classmethod
-    async def get_all_by_user_id(cls, session: AsyncSession, user_id: int) -> list[model]:
-        """Получение всех объектов по ID пользователя."""
-        query = select(cls.model).filter(cls.model.user_id == user_id)
-        result = await session.execute(query)
-        return result.scalars().all()

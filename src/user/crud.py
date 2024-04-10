@@ -1,10 +1,20 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import NoResultFound
-from database.models import User
+from database.models import User, Student, Group, Department
 from database.crud_base import CRUDBase
 from fastapi import HTTPException
 
+
+class CRUDStudent(CRUDBase):
+    model = Student
+
+
+class CRUDGroup(CRUDBase):
+    model = Group
+
+class CRUDDepartment(CRUDBase):
+    model = Department
 
 class CRUDUser(CRUDBase):
     model = User

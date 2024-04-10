@@ -1,6 +1,15 @@
 from datetime import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, DateTime, Enum, Boolean
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Float,
+    DateTime,
+    Enum,
+    Boolean,
+)
 from sqlalchemy.orm import declarative_base, relationship
 import enum
 from sqlalchemy import Sequence
@@ -8,146 +17,111 @@ from sqlalchemy import Sequence
 from database.database import Base
 
 
-class TransactionType(enum.Enum):
-    Buy = "Buy"
-    Sell = "Sell"
-    Dividend = "Dividend"
+class UserType(enum.Enum):
+    teacher = "teacher"
+    student = "student"
+    admin = "admin"
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
+    fio = Column(String)  # Убрали уникальность
     email = Column(String, unique=True)
     password = Column(String)
-    asset_types = relationship("AssetType", back_populates="user")
-    portfolios = relationship("Portfolio", back_populates="user")
+    user_type = Column(Enum(UserType))
+
+    student = relationship("Student", back_populates="user", uselist=False)
 
     def __str__(self):
         return f"User: {self.username} Email: {self.email} ID: {self.id}"
 
 
-class AssetType(Base):
-    __tablename__ = "asset_type"
+class Student(Base):
+    __tablename__ = "student"
+
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", back_populates="asset_types")
-    assets = relationship("Asset", back_populates="asset_type")
+    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
+    group = relationship("Group", back_populates="student")
+    user = relationship("User", back_populates="student")
 
-class Portfolio(Base):
-    __tablename__ = "portfolio"
+    history_student = relationship("History", back_populates="student_history")
+
+class Group(Base):
+    __tablename__ = "group"
+
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    description = Column(String)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", back_populates="portfolios")
-    assets = relationship("Asset", back_populates="portfolio")
+    name = Column(String, unique=True, nullable=False)
 
-
-class Asset(Base):
-    __tablename__ = "asset"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    quantity = Column(Float)
-    purchase_price = Column(Float)
-    current_price = Column(Float)
-    commission = Column(Float)
-    portfolio_id = Column(Integer, ForeignKey("portfolio.id"))
-    asset_type_id = Column(Integer, ForeignKey("asset_type.id"))
-    portfolio = relationship("Portfolio", back_populates="assets")
-    asset_type = relationship("AssetType", back_populates="assets")
-    transactions = relationship("Transaction", back_populates="asset")
-
-
-class Transaction(Base):
-    __tablename__ = "transaction"
-    id = Column(Integer, primary_key=True)
-    type = Column(Enum(TransactionType))
-    created_at = Column(DateTime, default=datetime.now)
-    quantity = Column(Float)
-    price = Column(Float)
-    asset_id = Column(Integer, ForeignKey("asset.id"))
-    asset = relationship("Asset", back_populates="transactions")
-
-class Groups(Base):
-    __tablename__ = 'Groups'
-
-    Groups_ID = Column(Integer, Sequence('group_id_seq'), primary_key=True)
-    Groups_name = Column(String, unique=True, nullable=False)
+    student = relationship("Student", back_populates="group")
     
-    students_group = relationship("Students", back_populates="group_students")
 
-class Students(Base):
-    __tablename__ = 'Students'
-
-    Students_ID = Column(Integer, Sequence('student_id_seq'), primary_key=True)
-    Zvan = Column(String)
-    Fio = Column(String, unique=True, nullable=False)
-    Password = Column(String)
-    Groups_ID = Column(Integer, ForeignKey('Groups.Groups_ID'), nullable=False)
-    
-    group_students = relationship("Groups", back_populates="students_group")
-    history_students = relationship("History", back_populates="students_history")
-    
 class Department(Base):
-    __tablename__ = 'Department'
+    __tablename__ = "department"
 
-    Department_ID = Column(Integer, Sequence('Department_id_seq'), primary_key=True)
-    Department_name = Column(String, unique=True, nullable=False)
-    
-    Discipline_Department = relationship("Discipline", back_populates="Department_Discipline")
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
+
+    discipline_department = relationship("Discipline", back_populates="department_discipline")
+
 
 class Discipline(Base):
-    __tablename__ = 'Discipline'
+    __tablename__ = "discipline"
 
-    Discipline_ID = Column(Integer, Sequence('Discipline_id_seq'), primary_key=True)
-    Discipline_name = Column(String, unique=True, nullable=False)
-    Department_ID = Column(Integer, ForeignKey('Department.Department_ID'), nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
     
-    Department_Discipline = relationship("Department", back_populates="Discipline_Department")
-    Theme_Discipline = relationship("Theme", back_populates="Discipline_Theme")
+    department_id = Column(Integer, ForeignKey("department.id"), nullable=False)
+
+    department_discipline = relationship("Department", back_populates="discipline_department")
+    theme_discipline = relationship("Theme", back_populates="discipline_theme")
+
 
 class Theme(Base):
-    __tablename__ = 'Theme'
+    __tablename__ = "theme"
 
-    Theme_ID = Column(Integer, Sequence('Theme_id_seq'), primary_key=True)
-    Theme_name = Column(String, nullable=False, unique=True)
-    Discipline_ID = Column(Integer, ForeignKey('Discipline.Discipline_ID'), nullable=False)
-    
-    Discipline_Theme = relationship("Discipline", back_populates="Theme_Discipline")
-    History_Theme = relationship("History", back_populates="Theme_History")
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    discipline_id = Column(Integer, ForeignKey("discipline.id"), nullable=False)
+
+    discipline_theme = relationship("Discipline", back_populates="theme_discipline")
+    history_theme = relationship("History", back_populates="theme_history")
 
 
 class Homework(Base):
-    __tablename__ = 'Homework'
+    __tablename__ = "homework"
 
-    Homework_ID = Column(Integer, Sequence('homework_id_seq'), primary_key=True)
-    Homework = Column(String)
-    
-    history_homework = relationship("History", back_populates="homework_history")    
-    
+    id = Column(Integer, primary_key=True)
+    homework = Column(String)
+
+    history_homework = relationship("History", back_populates="homework_history")
+
+
 class Visit(Base):
-    __tablename__ = 'Visit'
+    __tablename__ = "visit"
 
-    Visit_ID = Column(Integer, Sequence('visit_id_seq'), primary_key=True)
-    Data = Column(String, nullable=False)
-    Visit_status = Column(Boolean)
-        
-    history_visit = relationship("History", back_populates="visit_history")    
+    id = Column(Integer, primary_key=True)
+    data = Column(String, nullable=False)
+    visit_status = Column(Boolean)
+
+    history_visit = relationship("History", back_populates="visit_history")
 
 
 class History(Base):
-    __tablename__ = 'History'
+    __tablename__ = "history"
 
-    History_ID = Column(Integer, Sequence('visit_id_seq'), primary_key=True)
-    Students_ID = Column(Integer, ForeignKey('Students.Students_ID'), nullable=False)
-    Homework_ID = Column(Integer, ForeignKey('Homework.Homework_ID'), nullable=False)
-    Visit_ID = Column(Integer, ForeignKey('Visit.Visit_ID'), nullable=False)
-    Theme_ID = Column(Integer, ForeignKey('Theme.Theme_ID'), nullable=False)
-    
-    students_history = relationship("Students", back_populates="history_students")
+    id = Column(Integer, primary_key=True)
+    student_id = Column(Integer, ForeignKey("student.id"), nullable=False)
+    homework_id = Column(Integer, ForeignKey("homework.id"), nullable=False)
+    visit_id = Column(Integer, ForeignKey("visit.id"), nullable=False)
+    theme_id = Column(Integer, ForeignKey("theme.id"), nullable=False)
+
+    student_history = relationship("Student", back_populates="history_student")
     homework_history = relationship("Homework", back_populates="history_homework")
     visit_history = relationship("Visit", back_populates="history_visit")
-    Theme_History = relationship("Theme", back_populates="History_Theme")
+    theme_history = relationship("Theme", back_populates="history_theme")
+
+

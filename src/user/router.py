@@ -5,14 +5,24 @@ from fastapi.responses import RedirectResponse, Response
 
 from database.database import get_session
 from database.models import User
-from .schemas import UserCreate, UserOut
-from .crud import CRUDUser
+from .schemas import UserCreate, UserOut, GroupCreate, GroupOut
+from .crud import CRUDUser, CRUDStudent, CRUDGroup
 from .auth import hash_password, verify_password, create_access_token
 from .dependency import get_current_user, get_user_by_id
 from .exceptions import exception_user_not_found, exception_auth, exception_unique_field
 
 
 router = APIRouter(prefix="/user", tags=["users"])
+
+@router.post("/group", response_model=GroupOut, status_code=status.HTTP_201_CREATED)
+async def create_group(group: GroupCreate, session: AsyncSession = Depends(get_session)):
+    """
+    Создание новой группы.
+    """
+    new_group = await CRUDGroup.create(session, group.dict())
+    if new_group is None:
+        raise exception_unique_field
+    return new_group
 
 
 @router.post("/token")
@@ -57,15 +67,22 @@ async def register_user(
     response.set_cookie(key="access_token", value=access_token)
     return response
 
+
+
 @router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, session: AsyncSession = Depends(get_session)):
     """
     Создание нового пользователя.
     """
     user.password = hash_password(user.password)
-    new_user = await CRUDUser.create(session, user.model_dump())
+    data = user.dict()
+    student = data.pop("student", None)
+    new_user = await CRUDUser.create(session, data)
     if new_user is None:
         raise exception_unique_field
+    if student:
+        student["user_id"] = new_user.id
+        await CRUDStudent.create(session, student)
     return new_user
 
 
