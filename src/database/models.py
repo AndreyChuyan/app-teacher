@@ -95,7 +95,7 @@ class Homework(Base):
     __tablename__ = "homework"
 
     id = Column(Integer, primary_key=True)
-    homework = Column(String)
+    name = Column(String)
 
     history_homework = relationship("History", back_populates="homework_history")
 

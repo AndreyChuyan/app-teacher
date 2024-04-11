@@ -50,3 +50,27 @@ class DepartmentCreate(BaseModel):
 
 class DepartmentOut(GroupCreate):
     id: int
+
+
+class DisciplineCreate(BaseModel):
+    name: str
+    department_id: int
+    
+class DisciplineOut(DisciplineCreate):
+    id: int
+    
+class ThemeCreate(BaseModel):
+    name: str
+    discipline_id: int    
+    
+class HomeworkCreate(BaseModel):
+    name: str
+
+class VisitCreate(BaseModel):
+    data: str
+
+class HistoryCreate(BaseModel):
+    student_id: int
+    homework_id: int
+    visit_id: int
+    theme_id: int
