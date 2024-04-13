@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from database.database import create_tables
 from user.router import router as user_router
-# from frontend.router import router as frontend_router
+from frontend.router import router as frontend_router
 from exception import RedirectException
 
 
@@ -27,7 +27,7 @@ app.add_middleware(SessionMiddleware, secret_key="your_secret_key")
 app.mount("/assets", StaticFiles(directory="frontend/assets"), name="assets")
 
 app.include_router(user_router)
-# app.include_router(frontend_router)
+app.include_router(frontend_router)
 
 
 @app.exception_handler(RedirectException)

@@ -1,11 +1,11 @@
 body {
   margin: 0;
   font-family: 'Nunito Sans', Arial, sans-serif;
-  background-color: #f4f4f9; /* Светлый фон для всей страницы */
+  background-color: #efeaf4; /* Светлый фон для всей страницы */
 }
 
 .navbar {
-  background-color: #ffffff; /* Белый фон для шапки */
+  background-color: rgb(255, 255, 255), 255, 255); /* Белый фон для шапки */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для добавления глубины */
 }
 
@@ -183,3 +183,4 @@ p {
   line-height: 2rem; /* Выравнивание плейсхолдера по вертикали */
   padding-right: 2rem; /* Отступ от стрелки */
 }
+

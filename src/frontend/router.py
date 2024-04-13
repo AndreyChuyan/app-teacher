@@ -1,44 +1,45 @@
-# from fastapi import APIRouter, Request, Depends, status, Form
-# from fastapi.responses import RedirectResponse
-# from fastapi.templating import Jinja2Templates
-# from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Request, Depends, status, Form
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.ext.asyncio import AsyncSession
 
-# from user.dependency import get_correct_user_frontend, get_current_user
-# from database.models import User
-# from database.database import get_session
-# from .dependency import get_user_or_redirect
-
-
-# router = APIRouter(prefix="", tags=["frontend"])
-
-# templates = Jinja2Templates(directory="frontend/template")
+from user.dependency import get_correct_user_frontend, get_current_user
+from user.crud import CRUDUser
+from database.models import User
+from database.database import get_session
+from .dependency import get_user_or_redirect
 
 
-# @router.get("/auth")
-# async def get_login(
-#     request: Request,
-#     user: User | None = Depends(get_correct_user_frontend),
-#     not_auth: bool | None = None,
-# ):
-#     # if user:
-#     #     return RedirectResponse(url="/", status_code=status.HTTP_301_MOVED_PERMANENTLY)
-#     return templates.TemplateResponse(
-#         "auth.html", {"request": request, "not_auth": not_auth}
-#     )
+router = APIRouter(prefix="", tags=["frontend"])
+
+templates = Jinja2Templates(directory="frontend/template")
 
 
-# @router.get("/logout", response_class=RedirectResponse)
-# async def get_logout():
-#     response = RedirectResponse(url="/")
-#     response.delete_cookie("access_token")
-#     return response
+@router.get("/auth")
+async def get_login(
+    request: Request,
+    user: User | None = Depends(get_correct_user_frontend),
+    not_auth: bool | None = None,
+):
+    # if user:
+    #     return RedirectResponse(url="/", status_code=status.HTTP_301_MOVED_PERMANENTLY)
+    return templates.TemplateResponse(
+        "auth.html", {"request": request, "not_auth": not_auth}
+    )
 
 
-# @router.get("/register")
-# async def get_register(
-#     request: Request, user: User | None = Depends(get_correct_user_frontend)
-# ):
-#     return templates.TemplateResponse("register.html", {"request": request})
+@router.get("/logout", response_class=RedirectResponse)
+async def get_logout():
+    response = RedirectResponse(url="/")
+    response.delete_cookie("access_token")
+    return response
+
+
+@router.get("/register")
+async def get_register(
+    request: Request, user: User | None = Depends(get_correct_user_frontend)
+):
+    return templates.TemplateResponse("register.html", {"request": request})
 
 
 # @router.get("/portfolio")
@@ -54,17 +55,40 @@
 #     )
 
 
-# @router.get("/student")
-# async def get_student(
+@router.get("/student")
+async def get_student(
+    request: Request,
+    user: User = Depends(get_user_or_redirect),
+    session: AsyncSession = Depends(get_session),
+):
+    data = await CRUDUser.get_user_fio(session, user.username)
+    print(data)
+    return templates.TemplateResponse(
+        "student/student.html", {"request": request, "user": user, "data": data}
+    )
+
+
+# @router.post("/student")
+# async def show_student(
 #     request: Request,
 #     user: User = Depends(get_user_or_redirect),
+#     name: str = Form(...),
+#     description: str | None = Form(None),
 #     session: AsyncSession = Depends(get_session),
 # ):
-#     data = await CRUDPortfolio.get_all_by_user_id(session, user.id)
+#     url = "/student"
+#     # # Проверка на уникальность имени портфеля
+#     # user = await CRUDUs.get_by_name_and_user_id(session, name, user.id)
+#     # if portfolio:
+#     #     url = "/portfolio"
+#     #     request.session["message"] = "Портфель с таким именем уже существует"
 
-#     return templates.TemplateResponse(
-#         "page/student.html", {"request": request, "user": user, "data": data}
-#     )
+#     # else:
+#     #     data = {"name": name, "description": description, "user_id": user.id}
+#     #     portfolio = await CRUDPortfolio.create(session, data)
+#     #     url += f"asset?portfolio_id={portfolio.id}"
+
+#     return RedirectResponse(url=url, status_code=301)
 
 
 # @router.post("/portfolio")
@@ -161,8 +185,8 @@
 #     )
 
 
-# @router.get("/")
-# async def get_index(
-#     request: Request, user: User | None = Depends(get_correct_user_frontend)
-# ):
-#     return templates.TemplateResponse("index.html", {"request": request, "user": user})
+@router.get("/")
+async def get_index(
+    request: Request, user: User | None = Depends(get_correct_user_frontend)
+):
+    return templates.TemplateResponse("index.html", {"request": request, "user": user})

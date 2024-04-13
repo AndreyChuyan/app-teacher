@@ -23,9 +23,11 @@ class StudentBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-
     student: Optional[StudentBase] = None
 
+class StudentCreate(BaseModel):
+    user_id: int
+    group_id: int
 
 class UserOut(UserBase):
     id: int

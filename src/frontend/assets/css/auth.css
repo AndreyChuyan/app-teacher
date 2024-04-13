@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f8f9fa; /* Светлый фон всей страницы */
+    background-color: #c9eded; /* Светлый фон всей страницы */
   }
 
   .registration-form {
@@ -52,3 +52,7 @@
     box-shadow: 0 2px #771aa2; /* Подсветка внизу текста */
   }
 
+
+  body {
+    background-color: rgb(66, 165, 198);
+}

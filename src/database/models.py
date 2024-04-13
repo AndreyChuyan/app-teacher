@@ -42,8 +42,8 @@ class Student(Base):
     __tablename__ = "student"
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     group = relationship("Group", back_populates="student")
     user = relationship("User", back_populates="student")

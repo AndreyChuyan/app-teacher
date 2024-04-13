@@ -1,0 +1,45 @@
+{% extends "base/base.html" %}
+
+{% block title %}Страница студента{% endblock %}
+
+
+{% block content %}
+
+
+<h2><span class="badge text-bg-secondary"> Фамилия ученика </span> {{ data.fio }}</h2>
+
+<h2><span class="badge text-bg-secondary"> Группа </span> {{ data.group_name }} </h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Дата занятия</th>
+      <th scope="col">Тема занятия</th>
+      <th scope="col">Домашнее задание</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="table-success">
+      <th scope="row">1</th>
+      <td>{{ data.date }}</td>
+      <td>{{ data.theme }}</td>
+      <td>{{ data.homework }}</td>
+    </tr>
+    <!-- <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td colspan="2">Larry the Bird</td>
+      <td>@twitter</td>
+    </tr> -->
+  </tbody>
+</table>
+
+
+
+{% endblock %}

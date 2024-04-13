@@ -9,8 +9,8 @@ from user.auth import hash_password
 from user.exceptions import exception_user_not_found, exception_auth, exception_unique_field
 from database.database import Base, engine, get_session
 from user.crud import CRUDUser, CRUDStudent, CRUDGroup, CRUDDepartment, CRUDDiscipline, CRUDUsers
-from user.schemas import UserCreate, UserOut, GroupCreate, DepartmentCreate, DisciplineCreate, ThemeCreate, HomeworkCreate, VisitCreate, HistoryCreate
-from database.models import Group, Discipline, Theme, Homework, Visit, History, User
+from user.schemas import UserCreate, UserOut, GroupCreate, DepartmentCreate, DisciplineCreate, ThemeCreate, HomeworkCreate, VisitCreate, HistoryCreate, StudentCreate
+from database.models import Group, Discipline, Theme, Homework, Visit, History, User, Student
 import asyncio
 
 # # Добавление пользователей
@@ -29,6 +29,13 @@ new_groups = [
     GroupCreate(name="Group7"),
     GroupCreate(name="Group8"),
     GroupCreate(name="Group9")
+]
+
+new_student = [
+    StudentCreate(user_id="1", group_id="1"),
+    StudentCreate(user_id="2", group_id="2"),
+    StudentCreate(user_id="3", group_id="1"),
+    StudentCreate(user_id="4", group_id="4"),
 ]
 
 # # Добавление кафедр
@@ -104,12 +111,28 @@ async def add_users():
 
 asyncio.run(add_users())
 
+# Блок добавления студента
+async def create_student(student, session):
+    created_list = []
+    for date in student:
+        existing_student = await session.execute(select(Student).filter_by(user_id=date.user_id))
+        existing_student = existing_student.scalar_one_or_none()
+        if not existing_student:
+            disc = Student(user_id=date.user_id, group_id=date.group_id)
+            session.add(disc)
+            await session.commit()
+            created_list.append(disc)
+    return created_list
 
+async def add_student():
+    session = get_session()
+    async for s in session:
+        created_objects = await create_student(new_student, s)
+        for obj in created_objects:
+            if obj is not None:
+                print(f"Добавлен студент id: {obj.user_id}")
 
-
-
-
-
+asyncio.run(add_student())
 
 
 
