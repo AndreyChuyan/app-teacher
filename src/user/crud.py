@@ -10,6 +10,34 @@ from sqlalchemy.orm import selectinload
 class CRUDStudent(CRUDBase):
     model = Student
 
+    # @staticmethod
+    # async def get_all(session: AsyncSession) -> list[Student]:
+    #     """Получение всех студентов."""
+    #     query = select(Student, User).join(User)
+    #     result = await session.execute(query)
+    #     result = result.scalars().all()
+    #     result_lst = [
+    #         {
+    #             'id': student.id,
+    #             'fio': student.user.fio,
+    #             'group': student.group.name,
+    #             'department': student.group.department.name,
+    #         } for student in result
+    #     ]
+    #     return result_lst
+    #     # return result.scalars().all()
+    async def get_all(session: AsyncSession) -> list[dict]:
+        query = select(Student).options(selectinload(Student.user))
+        result = await session.execute(query)
+        result = result.scalars().all()
+        result_lst = [
+            {
+                'id': student.id,
+                'fio': student.user.fio,
+            } for student in result
+        ]
+        return result_lst
+
 class CRUDUsers(CRUDBase):
     model = User
 
@@ -22,6 +50,9 @@ class CRUDDepartment(CRUDBase):
 class CRUDDiscipline(CRUDBase):
     model = Discipline
 
+class CRUDTheme(CRUDBase):
+    model = Theme
+
 class CRUDUser(CRUDBase):
     model = User
 
@@ -31,7 +62,7 @@ class CRUDUser(CRUDBase):
         query = select(User).filter(User.username == username)
         result = await session.execute(query)
         return result.scalar_one_or_none()
-    
+
     @staticmethod
     async def get_user_fio(session: AsyncSession, username: str) -> User:
         """Получение fio по имени пользователя."""
@@ -47,19 +78,18 @@ class CRUDUser(CRUDBase):
             .where(User.username == username)
         )
         result = await session.execute(query)
-        row = result.fetchone()
+        rows = result.fetchall()
         # print(row)
-        if row:
-            result = {
-                'fio': row[0],
-                'group_name': row[1],
-                'homework': row[2],
-                'theme': row[3],
-                'date': row[4],
-            }
+        if rows:
+            result = [
+                {
+                    'fio': row[0],
+                    'group_name': row[1],
+                    'homework': row[2],
+                    'theme': row[3],
+                    'date': row[4],
+                } for row in rows
+            ]
             return result
         else:
-            return None
-
-    
-    
+            return []

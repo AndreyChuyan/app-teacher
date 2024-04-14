@@ -10,35 +10,105 @@
 
 <h2><span class="badge text-bg-secondary"> Группа </span> {{ data.group_name }} </h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Дата занятия</th>
-      <th scope="col">Тема занятия</th>
-      <th scope="col">Домашнее задание</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="table-success">
-      <th scope="row">1</th>
-      <td>{{ data.date }}</td>
-      <td>{{ data.theme }}</td>
-      <td>{{ data.homework }}</td>
-    </tr>
-    <!-- <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr> -->
-  </tbody>
-</table>
+
+<div class="row">
+  <div class="col-12">
+    <!-- Заголовок таблицы Портфели -->
+    <h2 class="mb-4">Портфели:</h2>
+    <!-- Таблица Портфели -->
+    <div class="table-responsive">
+      <table class="table table-hover table-shadow table-rounded">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Дата занятия</th>
+            <th scope="col">Тема занятия</th>
+            <th scope="col">Домашнее задание</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr class="table-success">
+            <td>{{ row.id }}</td>
+            <td>{{ row.date }}</td>
+            <td>{{ row.theme }}</td>
+            <td>{{ row.homework }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="d-flex justify-content-center">
+  <div class="mt-5 col-lg-5">
+    <h2>Добавить Группу</h2>
+    <form action="/group" method="post">
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Имя группы</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="d-flex justify-content-center">
+  <div class="mt-5 col-lg-5">
+    <h2>Пользователь в студенты</h2>
+    <form action="/create-student" method="post">
+      <div class="mb-3">
+        <label for="group_id" class="form-label">Студент</label>
+        <select class="form-control select2" id="user_id" name="user_id" required data-allow-clear="true">
+          <option value="">Выберите Пользователя</option>
+          {% for user in users %}
+          <option value="{{user.id}}">{{user.fio}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="group_id" class="form-label">Группа</label>
+        <select class="form-select select2" id="group_id" name="group_id" required data-allow-clear="true">
+          <option value="">Выбери Пользователь</option>
+          {% for group in groups %}
+          <option value="{{group.id}}">{{group.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="d-flex justify-content-center">
+  <div class="mt-5 col-lg-5">
+    <h2>Тема</h2>
+    <form action="/theme" method="post">
+      <div class="mb-3">
+        <label for="discipline_id" class="form-label">Предмет</label>
+        <select class="form-control select2" id="discipline_id" name="discipline_id" required data-allow-clear="true">
+          <option value="">Выберите предмет</option>
+          {% for discipline in disciplines %}
+          <option value="{{discipline.id}}">{{discipline.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">Имя</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+  </div>
+</div>
 
 
 
