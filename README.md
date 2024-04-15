@@ -29,15 +29,16 @@ uvicorn main:app --reload
 
 Открыть в браузере  [OpenAPI](http://127.0.0.1:8000/docs) `http://127.0.0.1:8000/docs` для тестирования приложения
 
+Запустить контейнер Docker
+`docker run -d -p 8000:8000 app-teacher`
 
-## 1 Урок
-- [x] Установка FastAPI
-- [x] Запуск приложения
-- [x] Создание простого API
-- [x] Создали CRUD API - Create, Read, Update, Delete
-- [x] Добавили валидацию данных
-- [x] Добавили схему данных  Pydantic
-- [x] Добавили исключения
-- [x] Добавили Dependency для работы с данными перед запросом
-- [ ] Создали модель SQLAlchemy
-- [ ] Подключили базу данных SQLite асинхронно
+
+Установка постгресс
+```bash
+sudo apt install postgresql
+sudo -u postgres createuser --interactive
+sudo -u postgres psql
+ALTER USER test WITH ENCRYPTED PASSWORD 'test0904';
+CREATE DATABASE testdb WITH OWNER test;
+
+```
