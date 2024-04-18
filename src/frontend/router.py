@@ -51,20 +51,8 @@ async def add_group(
 ):
     data = {"name": name}
     group = await CRUDGroup.create(session, data)
-    return RedirectResponse(url="/student", status_code=301)
+    return RedirectResponse(url="/prepod", status_code=301)
 
-
-# @router.get("/portfolio")
-# async def get_portfolio(
-#     request: Request,
-#     user: User = Depends(get_user_or_redirect),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     data = await CRUDPortfolio.get_all_by_user_id(session, user.id)
-
-#     return templates.TemplateResponse(
-#         "page/portfolio.html", {"request": request, "user": user, "data": data}
-#     )
 
 
 @router.get("/student")
@@ -74,7 +62,7 @@ async def get_student(
     session: AsyncSession = Depends(get_session),
 ):
     data = await CRUDUser.get_user_fio(session, user.username)
-    data = data * 10
+
 
     data = [
         {"id": i, **dct}
@@ -97,7 +85,39 @@ async def get_student(
         },
     )
 
-@router.post("/create-student")
+
+@router.get("/prepod")
+async def get_student(
+    request: Request,
+    user: User = Depends(get_user_or_redirect),
+    session: AsyncSession = Depends(get_session),
+):
+    data = await CRUDUser.get_user_fio(session, user.username)
+    data = data 
+
+    data = [
+        {"id": i, **dct}
+        for i, dct in enumerate(data, start=1)
+    ]
+    print(data)
+    users = await CRUDUser.get_all(session)
+    groups = await CRUDGroup.get_all(session)
+    disciplines = await CRUDDiscipline.get_all(session)
+
+    return templates.TemplateResponse(
+        "prepod/prepod.html",
+        {
+            "request": request,
+            "user": user,
+            "data": data,
+            "users": users,
+            "groups": groups,
+            "disciplines": disciplines,
+        },
+    )
+
+
+@router.post("/student-group")
 async def create_student(
     request: Request,
     user: User = Depends(get_user_or_redirect),
@@ -107,8 +127,7 @@ async def create_student(
 ):
     data = {"user_id": user_id, "group_id": group_id}
     student = await CRUDStudent.create(session, data)
-    print(student.id)
-    return RedirectResponse(url="/student", status_code=301)
+    return RedirectResponse(url="/prepod", status_code=301)
 
 
 @router.post("/theme")
@@ -121,123 +140,8 @@ async def add_theme(
 ):
     data = {"name": name, "discipline_id": discipline_id}
     theme = await CRUDTheme.create(session, data)
-    return RedirectResponse(url="/student", status_code=301)
+    return RedirectResponse(url="/prepod", status_code=301)
 
-# @router.post("/student")
-# async def show_student(
-#     request: Request,
-#     user: User = Depends(get_user_or_redirect),
-#     name: str = Form(...),
-#     description: str | None = Form(None),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     url = "/student"
-#     # # Проверка на уникальность имени портфеля
-#     # user = await CRUDUs.get_by_name_and_user_id(session, name, user.id)
-#     # if portfolio:
-#     #     url = "/portfolio"
-#     #     request.session["message"] = "Портфель с таким именем уже существует"
-
-#     # else:
-#     #     data = {"name": name, "description": description, "user_id": user.id}
-#     #     portfolio = await CRUDPortfolio.create(session, data)
-#     #     url += f"asset?portfolio_id={portfolio.id}"
-
-#     return RedirectResponse(url=url, status_code=301)
-
-
-# @router.post("/portfolio")
-# async def add_portfolio(
-#     request: Request,
-#     user: User = Depends(get_user_or_redirect),
-#     name: str = Form(...),
-#     description: str | None = Form(None),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     # Проверка на уникальность имени портфеля
-#     portfolio = await CRUDPortfolio.get_by_name_and_user_id(session, name, user.id)
-#     if portfolio:
-#         url = "/portfolio"
-#         request.session["message"] = "Портфель с таким именем уже существует"
-
-#     else:
-#         data = {"name": name, "description": description, "user_id": user.id}
-#         portfolio = await CRUDPortfolio.create(session, data)
-#         url += f"asset?portfolio_id={portfolio.id}"
-
-#     return RedirectResponse(url=url, status_code=301)
-
-
-# @router.get("/asset")
-# async def get_asset(
-#     request: Request,
-#     portfolio_id: int | None = None,
-#     user: User = Depends(get_user_or_redirect),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     data = await CRUDAsset.get_all_by_user_id_or_portfolio_id(session, user.id, portfolio_id)
-#     data = {
-#         "assets": data,
-#         "portfolio_names": set(asset["portfolio_name"] for asset in data),
-#         "asset_types": set(asset["asset_type"] for asset in data),
-#     }
-#     return templates.TemplateResponse(
-#         "page/asset.html", {"request": request, "user": user, "data": data}
-#     )
-
-
-# @router.post("/asset")
-# async def add_asset(
-#     request: Request,
-#     user: User = Depends(get_user_or_redirect),
-#     name: str = Form(...),
-#     purchase_price: float = Form(...),
-#     current_price: float = Form(...),
-#     commission: float = Form(0),
-#     portfolio_name: str = Form(...),
-#     asset_type_name: str = Form(...),
-#     quantity: str = Form(...),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     # Проверка на уникальность имени портфеля
-#     _, portfolio = await CRUDPortfolio.get_or_create(session, portfolio_name, user.id)
-#     _, asset_type = await CRUDAssetType.get_or_create(session, asset_type_name, user.id)
-
-#     data = {
-#         "name": name,
-#         "purchase_price": purchase_price,
-#         "current_price": current_price,
-#         "commission": commission,
-#         "portfolio_id": portfolio.id,
-#         "asset_type_id": asset_type.id,
-#         "quantity": quantity,
-#     }
-#     asset = await CRUDAsset.create(session, data)
-#     return RedirectResponse(url="/asset", status_code=301)
-
-
-# @router.post("/update-asset-price")
-# async def update_asset_price(
-#     request: Request,
-#     user: User = Depends(get_user_or_redirect),
-#     current_price_per_unit: float = Form(...),
-#     quantity: float = Form(...),
-#     asset_id: int = Form(...),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     new_current_price = current_price_per_unit * quantity
-#     data = {"current_price": new_current_price, "quantity": quantity}
-#     asset = await CRUDAsset.get_by_id(session, asset_id)
-#     await CRUDAsset.update(session, asset, data)
-#     return RedirectResponse(url="/asset", status_code=301)
-
-
-# @router.get("/transaction")
-# async def get_transaction(request: Request, user: User = Depends(get_user_or_redirect)):
-#     data = None
-#     return templates.TemplateResponse(
-#         "page/transaction.html", {"request": request, "user": user, "data": data}
-#     )
 
 
 @router.get("/")
