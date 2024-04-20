@@ -16,73 +16,195 @@
 </div>
 
 
+<nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3">
+  <a class="navbar-brand" href="#">Редактор базы данных</a>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading1">Добавление группы</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading2">Добавление темы</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading3">Добавление домашнего задания</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading4">Добавление студента в группу </a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Доп задачи</a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#scrollspyHeading10">Добавление данных</a></li>
+        <!-- <li><a class="dropdown-item" href="#scrollspyHeading4">Fourth</a></li> -->
+        <li><hr class="dropdown-divider"></li>
+        <!-- <li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li> -->
+      </ul>
+    </li>
+  </ul>
+</nav>
+<div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+  <h4 id="scrollspyHeading1"><h2>Добавление Группы</h2>
 
-<div class="d-flex justify-content-center">
-  <div class="mt-5 col-lg-5">
-    <h2>Добавить Группу</h2>
-    <form action="/group" method="post">
-
-      <div class="mb-3">
-        <label for="name" class="form-label">Имя группы</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+    <div class="d-flex justify-content-center">
+      <div class="mt-5 col-lg-5">
+        <form action="/group" method="post">
+    
+          <div class="mb-3">
+            <label for="name" class="form-label">Имя группы</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+    
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
       </div>
+    </div>
 
-      <button type="submit" class="btn btn-primary">Добавить</button>
-    </form>
-  </div>
+
+
+  </h4>
+  <h4 id="scrollspyHeading2"><h2>Добавление Темы</h2>
+
+    <div class="d-flex justify-content-center">
+      <div class="mt-5 col-lg-5">
+        
+        <form action="/theme" method="post">
+          <div class="mb-3">
+            <label for="discipline_id" class="form-label">Предмет</label>
+            <select class="form-control select2" id="discipline_id" name="discipline_id" required data-allow-clear="true">
+              <option value="">Выберите предмет</option>
+              {% for discipline in disciplines %}
+              <option value="{{discipline.id}}">{{discipline.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="name" class="form-label">Имя</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+      </div>
+    </div>
+
+
+
+  </h4>
+  <p> </p>
+  <p> </p>
+  <h4 id="scrollspyHeading3"><h2>Добавить домашнее задание</h2>
+
+    <div class="d-flex justify-content-center">
+      <div class="mt-5 col-lg-5">
+        
+        <form action="/homework" method="post">
+    
+          <div class="mb-3">
+            <label for="name" class="form-label">Содержание домашнего задания</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+    
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+      </div>
+    </div>
+
+
+  </h4>
+  <p> </p>
+  <p> </p>
+  <h4 id="scrollspyHeading4"><h2>Добавление студента в группу</h2>
+
+    <div class="d-flex justify-content-center">
+      <div class="mt-5 col-lg-5">
+        
+        <form action="/user-group" method="post">
+          <div class="mb-3">
+            <label for="user_id" class="form-label">Студент</label>
+            <select class="form-control select2" id="user_id" name="user_id" required data-allow-clear="true">
+              <option value="">Выберите студента</option>
+              {% for user in users %}
+              <option value="{{user.id}}">{{user.fio}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="group_id" class="form-label">Группа</label>
+            <select class="form-select select2" id="group_id" name="group_id" required data-allow-clear="true">
+              <option value="">Выберите группу</option>
+              {% for group in groups %}
+              <option value="{{group.id}}">{{group.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+      </div>
+    </div>
+
+
+  </h4>
+
+
+
+  <p>  </p>
+  <h4 id="scrollspyHeading5"><h2>Добавление домашнего задания к теме</h2>
+
+    <div class="d-flex justify-content-center">
+      <div class="mt-5 col-lg-5">
+        
+        <form action="/theme-homework" method="post">
+          <div class="mb-3">
+            <label for="theme_id" class="form-label">Тема</label>
+            <select class="form-control select2" id="theme_id" name="theme_id" required data-allow-clear="true">
+              <option value="">Выберите тему</option>
+              {% for theme in themes %}
+              <option value="{{theme.id}}">{{theme.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="homework_id" class="form-label">Домашнее задание</label>
+            <select class="form-select select2" id="homework_id" name="homework_id" required data-allow-clear="true">
+              <option value="">Выберите домашнее задание</option>
+              {% for homework in homeworks %}
+              <option value="{{homework.id}}">{{homework.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="user_id" class="form-label">Студент которому назначено задание</label>
+            <select class="form-select select2" id="user_id" name="user_id" required data-allow-clear="true">
+              <option value="">Выберите студента</option>
+              {% for student in students %}
+              <option value="{{student.id}}">{{student.fio}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+      </div>
+    </div>
+
+
+
+
+  </h4>
+  <p>...</p>
 </div>
 
 
 
-<div class="d-flex justify-content-center">
-  <div class="mt-5 col-lg-5">
-    <h2>Студента в группу</h2>
-    <form action="/student-group" method="post">
-      <div class="mb-3">
-        <label for="group_id" class="form-label">Студент</label>
-        <select class="form-control select2" id="user_id" name="user_id" required data-allow-clear="true">
-          <option value="">Выберите студента</option>
-          {% for user in users %}
-          <option value="{{user.id}}">{{user.fio}}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="group_id" class="form-label">Группа</label>
-        <select class="form-select select2" id="group_id" name="group_id" required data-allow-clear="true">
-          <option value="">Выберите группу</option>
-          {% for group in groups %}
-          <option value="{{group.id}}">{{group.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary">Добавить</button>
-    </form>
-  </div>
-</div>
 
 
-<div class="d-flex justify-content-center">
-  <div class="mt-5 col-lg-5">
-    <h2>Тема</h2>
-    <form action="/theme" method="post">
-      <div class="mb-3">
-        <label for="discipline_id" class="form-label">Предмет</label>
-        <select class="form-control select2" id="discipline_id" name="discipline_id" required data-allow-clear="true">
-          <option value="">Выберите предмет</option>
-          {% for discipline in disciplines %}
-          <option value="{{discipline.id}}">{{discipline.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="name" class="form-label">Имя</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Добавить</button>
-    </form>
-  </div>
-</div>
+
+
+
+
+
+
+
+
+
 
 
 

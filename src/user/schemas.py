@@ -24,10 +24,11 @@ class StudentBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     student: Optional[StudentBase] = None
-
-class StudentCreate(BaseModel):
-    user_id: int
     group_id: int
+
+# class StudentCreate(BaseModel):
+#     user_id: int
+#     group_id: int
 
 class UserOut(UserBase):
     id: int
@@ -72,7 +73,7 @@ class VisitCreate(BaseModel):
     data: str
 
 class HistoryCreate(BaseModel):
-    student_id: int
+    user_id: int
     homework_id: int
     visit_id: int
     theme_id: int

@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse, Response
 from database.database import get_session
 from database.models import User
 from .schemas import UserCreate, UserOut, GroupCreate, GroupOut
-from .crud import CRUDUser, CRUDStudent, CRUDGroup
+from .crud import CRUDUser, CRUDGroup
 from .auth import hash_password, verify_password, create_access_token
 from .dependency import get_current_user, get_user_by_id
 from .exceptions import exception_user_not_found, exception_auth, exception_unique_field
@@ -49,6 +49,8 @@ async def login_for_access_token_frontend(
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(key="access_token", value=access_token)
     return response
+
+
 
 
 

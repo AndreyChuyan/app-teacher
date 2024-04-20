@@ -1,42 +1,42 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import NoResultFound
-from database.models import User, Student, Group, Department, Discipline, Homework, History, Theme, Visit
+from database.models import User, Group, Department, Discipline, Homework, History, Theme, Visit
 from database.crud_base import CRUDBase
 from fastapi import HTTPException
 from sqlalchemy.orm import selectinload
+from typing import Optional
 
+# class CRUDStudent(CRUDBase):
+#     model = Student
 
-class CRUDStudent(CRUDBase):
-    model = Student
-
-    # @staticmethod
-    # async def get_all(session: AsyncSession) -> list[Student]:
-    #     """Получение всех студентов."""
-    #     query = select(Student, User).join(User)
-    #     result = await session.execute(query)
-    #     result = result.scalars().all()
-    #     result_lst = [
-    #         {
-    #             'id': student.id,
-    #             'fio': student.user.fio,
-    #             'group': student.group.name,
-    #             'department': student.group.department.name,
-    #         } for student in result
-    #     ]
-    #     return result_lst
-    #     # return result.scalars().all()
-    async def get_all(session: AsyncSession) -> list[dict]:
-        query = select(Student).options(selectinload(Student.user))
-        result = await session.execute(query)
-        result = result.scalars().all()
-        result_lst = [
-            {
-                'id': student.id,
-                'fio': student.user.fio,
-            } for student in result
-        ]
-        return result_lst
+#     # @staticmethod
+#     # async def get_all(session: AsyncSession) -> list[Student]:
+#     #     """Получение всех студентов."""
+#     #     query = select(Student, User).join(User)
+#     #     result = await session.execute(query)
+#     #     result = result.scalars().all()
+#     #     result_lst = [
+#     #         {
+#     #             'id': student.id,
+#     #             'fio': student.user.fio,
+#     #             'group': student.group.name,
+#     #             'department': student.group.department.name,
+#     #         } for student in result
+#     #     ]
+#     #     return result_lst
+#     #     # return result.scalars().all()
+#     async def get_all(session: AsyncSession) -> list[dict]:
+#         query = select(Student).options(selectinload(Student.user))
+#         result = await session.execute(query)
+#         result = result.scalars().all()
+#         result_lst = [
+#             {
+#                 'id': student.id,
+#                 'fio': student.user.fio,
+#             } for student in result
+#         ]
+#         return result_lst
 
 class CRUDUsers(CRUDBase):
     model = User
@@ -53,6 +53,13 @@ class CRUDDiscipline(CRUDBase):
 class CRUDTheme(CRUDBase):
     model = Theme
 
+class CRUDHistory(CRUDBase):
+    model = History
+    
+class CRUDHomework(CRUDBase):
+    model = Homework
+
+
 class CRUDUser(CRUDBase):
     model = User
 
@@ -61,7 +68,12 @@ class CRUDUser(CRUDBase):
         """Получение пользователя по имени пользователя."""
         query = select(User).filter(User.username == username)
         result = await session.execute(query)
-        return result.scalar_one_or_none()
+        user = result.scalar_one_or_none()
+        return user
+    
+    
+
+    
 
     @staticmethod
     async def get_user_fio(session: AsyncSession, username: str) -> User:
@@ -69,9 +81,9 @@ class CRUDUser(CRUDBase):
         query = (
             select(User.fio, Group.name, Homework.name, Theme.name, Visit.data)
             .select_from(User)
-            .join(Student, User.id == Student.user_id)
-            .join(Group, Student.group_id == Group.id)
-            .join(History, History.student_id == Student.user_id)
+            # .join(User, User.id == User.id)
+            .join(Group, User.group_id == Group.id)
+            .join(History, History.user_id == User.id)
             .join(Homework, Homework.id == History.homework_id)
             .join(Theme, Theme.id == History.theme_id)
             .join(Visit, Visit.id == History.visit_id)

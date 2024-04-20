@@ -31,24 +31,27 @@ class User(Base):
     email = Column(String, unique=True)
     password = Column(String)
     user_type = Column(Enum(UserType))
+    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    group = relationship("Group", back_populates="user")
+    history_user = relationship("History", back_populates="user_history")
 
-    student = relationship("Student", back_populates="user", uselist=False)
+    # student = relationship("Student", back_populates="user", uselist=False)
 
     def __str__(self):
         return f"User: {self.username} Email: {self.email} ID: {self.id}"
 
 
-class Student(Base):
-    __tablename__ = "student"
+# class Student(Base):
+#     __tablename__ = "student"
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
-    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+#     id = Column(Integer, primary_key=True)
+#     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    
 
-    group = relationship("Group", back_populates="student")
-    user = relationship("User", back_populates="student")
+    
+#     user = relationship("User", back_populates="student")
 
-    history_student = relationship("History", back_populates="student_history")
+    
 
 class Group(Base):
     __tablename__ = "group"
@@ -56,7 +59,7 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
-    student = relationship("Student", back_populates="group")
+    user = relationship("User", back_populates="group")
     
 
 class Department(Base):
@@ -114,12 +117,12 @@ class History(Base):
     __tablename__ = "history"
 
     id = Column(Integer, primary_key=True)
-    student_id = Column(Integer, ForeignKey("student.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     homework_id = Column(Integer, ForeignKey("homework.id"), nullable=False)
     visit_id = Column(Integer, ForeignKey("visit.id"), nullable=False)
     theme_id = Column(Integer, ForeignKey("theme.id"), nullable=False)
 
-    student_history = relationship("Student", back_populates="history_student")
+    user_history = relationship("User", back_populates="history_user")
     homework_history = relationship("Homework", back_populates="history_homework")
     visit_history = relationship("Visit", back_populates="history_visit")
     theme_history = relationship("Theme", back_populates="history_theme")
