@@ -88,7 +88,7 @@ class CRUDUser(CRUDBase):
         )
         result = await session.execute(query)
         rows = result.fetchall()
-        # print(row)
+        print(rows)
         if rows:
             result = [
                 {

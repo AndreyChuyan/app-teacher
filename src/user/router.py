@@ -65,7 +65,8 @@ async def register_user(
     data = {"username": username, "password": password, "email": email}
     user = await CRUDUser.create(session, data)
     access_token = create_access_token(data={"username": user.username})
-    response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    # print(access_token)repod1
+    response = RedirectResponse(url="/auth", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(key="access_token", value=access_token)
     return response
 

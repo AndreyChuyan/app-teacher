@@ -119,6 +119,9 @@ async def get_users(
     homeworks = await CRUDHomework.get_all(session)
     students = await CRUDUser.get_all(session)
 
+    data2 = []  
+    for user_data in users:
+        data2.append({"id": user_data.id, "username": user_data.username, "fio": user_data.fio})  # Пример добавления данных пользователя, измените на необходимые поля
 
     return templates.TemplateResponse(
         "prepod/prepod.html",
@@ -132,6 +135,7 @@ async def get_users(
             "themes": themes,
             "homeworks": homeworks,
             "students": students,
+            "data2": data2,
         },
     )
 

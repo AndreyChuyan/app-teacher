@@ -154,7 +154,7 @@
 
 
   <p>  </p>
-  <h4 id="scrollspyHeading5"><h2>Добавление домашнего задания к теме</h2>
+  <h4 id="scrollspyHeading5"><h2>Добавление домашнего задания</h2>
 
     <div class="d-flex justify-content-center">
       <div class="mt-5 col-lg-5">
@@ -192,6 +192,34 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-12">
+
+        <h3 class="mb-4"></h3>
+        <h3 class="mb-4">Список студентов:</h3>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-shadow table-rounded">
+            <thead>
+              <tr>
+                <th scope="col">id</th>
+                <th scope="col">Логин</th>
+                <th scope="col">ФИО</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in data2 %}
+              <tr class="table-success">
+                <td>{{ row.id }}</td>
+                <td>{{ row.username }}</td>
+                <td>{{ row.fio }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
 
 
