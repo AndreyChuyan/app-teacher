@@ -15,7 +15,7 @@ import asyncio
 
 # # Добавление пользователей
 new_users = [
-    UserCreate(username="user1", fio="Иванов Иван Сергеевич", email="123@mail.ru", user_type = "teacher", password = "test", group_id=1),
+    UserCreate(username="prepod1", fio="Чуян Андрей Александрович", email="123@mail.ru", user_type = "teacher", password = "test", group_id=1),
     UserCreate(username="user2", fio="Петров Петр Иванович", email="222@mail.ru", user_type = "student", password = "test", group_id=2),
     UserCreate(username="user3", fio="Сидоров Сидор Сидорин", email="3333@mail.ru", user_type = "student", password = "test", group_id=3),
     UserCreate(username="user4", fio="Лапин Лаповский Лапович", email="4444@mail.ru", user_type = "student", password = "test", group_id=1)
@@ -76,8 +76,9 @@ new_visits = [
 new_history = [
     HistoryCreate(user_id= 1, homework_id= 1, visit_id= 1, theme_id= 1),
     HistoryCreate(user_id= 2, homework_id= 2, visit_id= 2, theme_id= 2),
-    HistoryCreate(user_id= 3, homework_id= 2, visit_id= 2, theme_id= 2),
-    HistoryCreate(user_id= 2, homework_id= 2, visit_id= 2, theme_id= 2)
+    HistoryCreate(user_id= 3, homework_id= 3, visit_id= 3, theme_id= 3),
+    HistoryCreate(user_id= 2, homework_id= 4, visit_id= 4, theme_id= 1),
+    HistoryCreate(user_id= 2, homework_id= 1, visit_id= 1, theme_id= 2)
 ]
 
 

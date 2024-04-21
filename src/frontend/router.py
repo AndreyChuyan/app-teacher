@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from user.dependency import get_correct_user_frontend, get_current_user
 from user.crud import CRUDUser, CRUDGroup, CRUDDiscipline, CRUDTheme, CRUDHomework, CRUDHistory
+from database.crud_base import CRUDBase
 from database.models import User
 from database.database import get_session
 from .dependency import get_user_or_redirect
@@ -135,6 +136,10 @@ async def get_users(
     )
 
 
+
+
+
+
 @router.post("/theme")
 async def add_theme(
     request: Request,
@@ -151,13 +156,13 @@ async def add_theme(
 async def create_user(
     request: Request,
     user: User = Depends(get_user_or_redirect),
-    user_username: int = Form(...),
+    user_id: int = Form(...),
     group_id: int = Form(...),
     user_fio: str = Form(...),
     session: AsyncSession = Depends(get_session),
 ):
-    data = {"fio": user_fio, "group_id": group_id, "username": user_username}
-    user = await CRUDUser.update(session, data)
+    data = {"fio": user_fio, "group_id": group_id}
+    user = await CRUDBase.update_user(session, user_id, data)
     return RedirectResponse(url="/prepod", status_code=301)
 
 # @router.post("/homework")
@@ -188,9 +193,44 @@ async def theme_homework(
 
 
 
-
 @router.get("/")
-async def get_index(
-    request: Request, user: User | None = Depends(get_correct_user_frontend)
+# async def get_index(
+#     request: Request, user: User | None = Depends(get_correct_user_frontend)
+# ):
+#     return templates.TemplateResponse("index.html", {"request": request, "user": user})
+
+async def get_all_users(
+    request: Request,
+    user: User = Depends(get_user_or_redirect),
+    session: AsyncSession = Depends(get_session),
 ):
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+    data = await CRUDUser.get_user_fio(session, user.username)
+    data = data 
+
+    data = [
+        {"id": i, **dct}
+        for i, dct in enumerate(data, start=1)
+    ]
+    print(data)
+    users = await CRUDUser.get_all(session)
+    groups = await CRUDGroup.get_all(session)
+    disciplines = await CRUDDiscipline.get_all(session)
+    themes = await CRUDTheme.get_all(session)
+    homeworks = await CRUDHomework.get_all(session)
+    students = await CRUDUser.get_all(session)
+
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "user": user,
+            "data": data,
+            "users": users,
+            "groups": groups,
+            "disciplines": disciplines,
+            "themes": themes,
+            "homeworks": homeworks,
+            "students": students,
+        },
+    )

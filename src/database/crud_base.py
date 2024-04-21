@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from .database import Base
 from .models import User
+from sqlalchemy import update
 
 
 class CRUDBase:
@@ -65,6 +66,17 @@ class CRUDBase:
             return user
         return None       
 
+    @classmethod
+    async def update_user(self, session: AsyncSession, user_id: int, update_data: dict):
+        user = await session.execute(select(User).filter(User.id == user_id))
+        user = user.scalar()
+        if user:
+            update_statement = update(User).where(User.id == user_id).values(update_data)
+            await session.execute(update_statement)
+            await session.commit()
+            return True
+        return False
+    
     @classmethod
     async def delete(cls, session: AsyncSession, obj: model):
         """Удаление объекта."""
