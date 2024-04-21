@@ -151,15 +151,25 @@ async def add_theme(
 async def create_user(
     request: Request,
     user: User = Depends(get_user_or_redirect),
-    user_id: int = Form(...),
+    user_username: int = Form(...),
     group_id: int = Form(...),
+    user_fio: str = Form(...),
     session: AsyncSession = Depends(get_session),
 ):
-    data = {"id": user_id, "group_id": group_id}
-    user = await CRUDUser.create(session, data)
+    data = {"fio": user_fio, "group_id": group_id, "username": user_username}
+    user = await CRUDUser.update(session, data)
     return RedirectResponse(url="/prepod", status_code=301)
 
-
+# @router.post("/homework")
+# async def add_homework(
+#     request: Request,
+#     user: User = Depends(get_user_or_redirect),
+#     name: str = Form(...),
+#     session: AsyncSession = Depends(get_session),
+# ):
+#     data = {"name": name}
+#     homework = await CRUDHomework.create(session, data)
+#     return RedirectResponse(url="/prepod", status_code=301)
 
 
 

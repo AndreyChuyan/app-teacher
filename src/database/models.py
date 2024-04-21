@@ -30,8 +30,8 @@ class User(Base):
     fio = Column(String)  # Убрали уникальность
     email = Column(String, unique=True)
     password = Column(String)
-    user_type = Column(Enum(UserType))
-    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    user_type = Column(Enum(UserType), default=UserType.student)
+    group_id = Column(Integer, ForeignKey("group.id"))
     group = relationship("Group", back_populates="user")
     history_user = relationship("History", back_populates="user_history")
 

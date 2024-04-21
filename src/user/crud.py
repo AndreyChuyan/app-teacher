@@ -71,9 +71,6 @@ class CRUDUser(CRUDBase):
         user = result.scalar_one_or_none()
         return user
     
-    
-
-    
 
     @staticmethod
     async def get_user_fio(session: AsyncSession, username: str) -> User:

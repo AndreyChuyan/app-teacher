@@ -64,7 +64,7 @@ async def register_user(
     password = hash_password(password)
     data = {"username": username, "password": password, "email": email}
     user = await CRUDUser.create(session, data)
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(data={"username": user.username})
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(key="access_token", value=access_token)
     return response
@@ -83,8 +83,8 @@ async def create_user(user: UserCreate, session: AsyncSession = Depends(get_sess
     if new_user is None:
         raise exception_unique_field
     if student:
-        student["user_id"] = new_user.id
-        await CRUDStudent.create(session, student)
+        user["id"] = new_user.id
+        await CRUDUser.create(session, student)
     return new_user
 
 

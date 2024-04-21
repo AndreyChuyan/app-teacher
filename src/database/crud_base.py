@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from .database import Base
+from .models import User
 
 
 class CRUDBase:
@@ -21,6 +22,9 @@ class CRUDBase:
             await session.rollback()
             return None
 
+
+
+
     @classmethod
     async def get_all(cls, session: AsyncSession) -> list[model]:
         """Получение всех объектов."""
@@ -36,19 +40,30 @@ class CRUDBase:
         return result.scalar_one_or_none()
 
 
+    # @classmethod
+    # async def update(
+    #     cls, session: AsyncSession, obj: model, update_data: dict
+    # ) -> model | None:
+    #     """Обновление данных объекта."""
+    #     try:
+    #         for key, value in update_data.items():
+    #             setattr(obj, key, value)
+    #         await session.commit()
+    #         return obj
+    #     except IntegrityError:
+    #         await session.rollback()
+    #         return None
+        
     @classmethod
-    async def update(
-        cls, session: AsyncSession, obj: model, update_data: dict
-    ) -> model | None:
-        """Обновление данных объекта."""
-        try:
+    async def update(self, session: AsyncSession, user_id: int, update_data: dict):
+        user = await session.query(User).filter(User.id == user_id).first()
+        if user:
             for key, value in update_data.items():
-                setattr(obj, key, value)
+                setattr(user, key, value)
+            session.add(user)
             await session.commit()
-            return obj
-        except IntegrityError:
-            await session.rollback()
-            return None
+            return user
+        return None       
 
     @classmethod
     async def delete(cls, session: AsyncSession, obj: model):

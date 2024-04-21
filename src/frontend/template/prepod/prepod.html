@@ -112,21 +112,22 @@
   </h4>
   <p> </p>
   <p> </p>
-  <h4 id="scrollspyHeading4"><h2>Добавление студента в группу</h2>
+  <h4 id="scrollspyHeading4"><h2>Редактирование студента</h2>
 
     <div class="d-flex justify-content-center">
       <div class="mt-5 col-lg-5">
         
         <form action="/user-group" method="post">
           <div class="mb-3">
-            <label for="user_id" class="form-label">Студент</label>
-            <select class="form-control select2" id="user_id" name="user_id" required data-allow-clear="true">
-              <option value="">Выберите студента</option>
-              {% for user in users %}
-              <option value="{{user.id}}">{{user.fio}}</option>
+            <label for="user_username" class="form-label">Студент</label>
+            <select class="form-control select2" id="user_username" name="user_username" required data-allow-clear="true">
+              <option value="">Выберите имя студента</option>
+              {% for student in students %}
+              <option value="{{student.id}}">{{student.username}}</option>
               {% endfor %}
             </select>
           </div>
+
           <div class="mb-3">
             <label for="group_id" class="form-label">Группа</label>
             <select class="form-select select2" id="group_id" name="group_id" required data-allow-clear="true">
@@ -136,6 +137,12 @@
               {% endfor %}
             </select>
           </div>
+
+          <div class="mb-3">
+            <label for="user_fio" class="form-label">Фамилия и инициалы</label>
+            <input type="text" class="form-control" id="user_fio" name="user_fio" required>
+          </div>
+          
           <button type="submit" class="btn btn-primary">Добавить</button>
         </form>
       </div>
