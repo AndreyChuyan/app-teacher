@@ -215,7 +215,7 @@ async def get_all_users(
         {"id": i, **dct}
         for i, dct in enumerate(data, start=1)
     ]
-    print(data)
+    # print(data)
     users = await CRUDUser.get_all(session)
     groups = await CRUDGroup.get_all(session)
     disciplines = await CRUDDiscipline.get_all(session)

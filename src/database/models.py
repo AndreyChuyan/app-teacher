@@ -41,17 +41,6 @@ class User(Base):
         return f"User: {self.username} Email: {self.email} ID: {self.id}"
 
 
-# class Student(Base):
-#     __tablename__ = "student"
-
-#     id = Column(Integer, primary_key=True)
-#     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
-    
-
-    
-#     user = relationship("User", back_populates="student")
-
-    
 
 class Group(Base):
     __tablename__ = "group"

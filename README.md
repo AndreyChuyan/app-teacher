@@ -30,8 +30,10 @@ uvicorn main:app --reload
 Открыть в браузере  [OpenAPI](http://127.0.0.1:8000/docs) `http://127.0.0.1:8000/docs` для тестирования приложения
 
 Запустить контейнер Docker
+`docker build -t app-teacher .`
 `docker run -d -p 8000:8000 app-teacher`
-
+`docker stop app-teacher`
+docker rm -f app-teacher
 
 Установка постгресс
 ```bash

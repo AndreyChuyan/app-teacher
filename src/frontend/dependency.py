@@ -8,5 +8,5 @@ from exception import RedirectException
 
 async def get_user_or_redirect(request: Request, user: User | None = Depends(get_correct_user_frontend)) -> User:
     if not user:
-        raise RedirectException(url="/")
+        raise RedirectException(url="/auth")
     return user
